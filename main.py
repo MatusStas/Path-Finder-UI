@@ -6,6 +6,9 @@ import PIL
 
 color = 'red'
 on = 0
+start_block_on = 0
+
+arr_color = {}
 
 def set_size():
 	width = 60
@@ -14,7 +17,7 @@ def set_size():
 	return width*pixel_size, height*pixel_size, pixel_size
 
 
-def create_grid(width, height, pixel_size):	#making the grid
+def create_grid(width, height, pixel_size):
 	for row in range(pixel_size, height, pixel_size):
 		screen.create_line(0, row, width, row, fill = "grey")
 	for column in range(pixel_size, width, pixel_size):
@@ -27,10 +30,26 @@ def set_color(colour):
 
 
 def paint(event):
-	global color		
-	x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
-	screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
-	draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+	global color, start_block_on, arr_color
+	if color == 'white':
+		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
+		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
+		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+		start_block_on = 1
+		if (x1,y1) in arr_color:
+			clr = arr_color[(x1,y1)]
+			print(clr)
+			if clr == "red" and start_block_on == 1:
+				start_block_on = 0
+	elif not(start_block_on == 1 and color == 'red'):
+		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
+		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
+		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+		start_block_on = 1
+		arr_color[(x1,y1)] = "red"
+		print(arr_color)
+
+
 
 
 def pixel_color(x, y):
@@ -39,13 +58,13 @@ def pixel_color(x, y):
 
 
 def erase_all():
-	global on
+	global on, start_block_on
 	if not(on):
 		for column in range(0, height, pixel_size):
 			for row in range(0, width, pixel_size):
 				screen.create_rectangle(row+1, column+1, row+pixel_size-1, column+pixel_size-1, fill = 'white', outline = 'white')
 				draw.rectangle([row+1, column+1, row+pixel_size-1, column+pixel_size-1], fill = 'white', outline = 'white')
-
+	start_block_on = 0
 
 def make():																		
 	arr = []
@@ -151,7 +170,7 @@ but_exe = Button(root, width = 33, height = 2, text = "EXECUTE", command = execu
 but_str = Button(root, width = 33, height = 2, text = "START BLOCK", command = lambda: set_color('red')).place(x = 303, y = height+2)
 but_fin = Button(root, width = 33, height = 2, text = "FINISH BLOCK", command = lambda: set_color('blue')).place(x = 604, y = height+2)
 but_obs = Button(root, width = 33, height = 2, text = "OBSTACLE BLOCK", command = lambda: set_color('black')).place(x = 905, y = height+2)
-but_era = Button(root, width = 33, height = 2, text = "ERASE", command = lambda: set_color('white')).place(x = 1206, y = height+2)
+but_era = Button(root, width = 33, height = 2, text = "ERASE BLOCK", command = lambda: set_color('white')).place(x = 1206, y = height+2)
 but_all = Button(root, width = 33, height = 2, text = "ERASE ALL", command = erase_all).place(x = 1506, y = height+2)
 
 root.mainloop()
