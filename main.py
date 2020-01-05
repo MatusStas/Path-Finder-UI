@@ -7,6 +7,7 @@ import PIL
 color = 'red'
 on = 0
 start_block_on = 0
+finish_block_on = 0
 
 arr_color = {}
 
@@ -30,24 +31,41 @@ def set_color(colour):
 
 
 def paint(event):
-	global color, start_block_on, arr_color
+	global color, start_block_on, finish_block_on, arr_color
 	if color == 'white':
 		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
-		start_block_on = 1
 		if (x1,y1) in arr_color:
 			clr = arr_color[(x1,y1)]
 			print(clr)
 			if clr == "red" and start_block_on == 1:
 				start_block_on = 0
-	elif not(start_block_on == 1 and color == 'red'):
+				del arr_color[(x1,y1)]
+
+			if clr == 'blue' and finish_block_on == 1:
+				del arr_color[(x1,y1)]
+				finish_block_on = 0
+	elif color == 'red':
+		if not(start_block_on == 1):
+			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
+			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
+			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+			start_block_on = 1
+			arr_color[(x1,y1)] = "red"
+			print(arr_color)
+	elif color == 'blue':
+		if not(finish_block_on == 1):		
+			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
+			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
+			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+			finish_block_on = 1
+			arr_color[(x1,y1)] = "blue"
+			print(arr_color)
+	else:
 		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
-		start_block_on = 1
-		arr_color[(x1,y1)] = "red"
-		print(arr_color)
 
 
 
@@ -58,13 +76,14 @@ def pixel_color(x, y):
 
 
 def erase_all():
-	global on, start_block_on
+	global on, start_block_on, finish_block_on
 	if not(on):
 		for column in range(0, height, pixel_size):
 			for row in range(0, width, pixel_size):
 				screen.create_rectangle(row+1, column+1, row+pixel_size-1, column+pixel_size-1, fill = 'white', outline = 'white')
 				draw.rectangle([row+1, column+1, row+pixel_size-1, column+pixel_size-1], fill = 'white', outline = 'white')
 	start_block_on = 0
+	finish_block_on = 0
 
 def make():																		
 	arr = []
@@ -96,9 +115,14 @@ def poinf_info(x, y):
 		info.append([x-pixel_size, y])
 	return info
 
+def check_first():
+	global start_block_on, finish_block_on
+	if start_block_on == 1 and finish_block_on == 1:
+		execute()
 
 def execute():
 	global on
+	erase_all()
 	arr, start, end = make()
 	que = [start]
 
@@ -166,7 +190,7 @@ create_grid(width, height, pixel_size)
 screen.bind("<Button-1>", paint)
 screen.bind("<B1-Motion>", paint)
 
-but_exe = Button(root, width = 33, height = 2, text = "EXECUTE", command = execute).place(x = 2, y = height+2)
+but_exe = Button(root, width = 33, height = 2, text = "EXECUTE", command = check_first).place(x = 2, y = height+2)
 but_str = Button(root, width = 33, height = 2, text = "START BLOCK", command = lambda: set_color('red')).place(x = 303, y = height+2)
 but_fin = Button(root, width = 33, height = 2, text = "FINISH BLOCK", command = lambda: set_color('blue')).place(x = 604, y = height+2)
 but_obs = Button(root, width = 33, height = 2, text = "OBSTACLE BLOCK", command = lambda: set_color('black')).place(x = 905, y = height+2)
