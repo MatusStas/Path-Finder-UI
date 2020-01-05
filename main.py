@@ -30,15 +30,15 @@ def set_color(colour):
 	color = colour
 
 
+
 def paint(event):
 	global color, start_block_on, finish_block_on, arr_color
-	if color == 'white':
+	if color == 'white' and not(on):
 		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
 		if (x1,y1) in arr_color:
 			clr = arr_color[(x1,y1)]
-			print(clr)
 			if clr == "red" and start_block_on == 1:
 				start_block_on = 0
 				del arr_color[(x1,y1)]
@@ -46,23 +46,21 @@ def paint(event):
 			if clr == 'blue' and finish_block_on == 1:
 				del arr_color[(x1,y1)]
 				finish_block_on = 0
-	elif color == 'red':
+	elif color == 'red' and not(on):
 		if not(start_block_on == 1):
 			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
 			start_block_on = 1
 			arr_color[(x1,y1)] = "red"
-			print(arr_color)
-	elif color == 'blue':
+	elif color == 'blue' and not(on):
 		if not(finish_block_on == 1):		
 			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
 			finish_block_on = 1
 			arr_color[(x1,y1)] = "blue"
-			print(arr_color)
-	else:
+	elif color == 'black' and not(on):
 		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
 		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
@@ -76,7 +74,7 @@ def pixel_color(x, y):
 
 
 def erase_all():
-	global on, start_block_on, finish_block_on
+	global on, start_block_on, finish_block_on, arr_color
 	if not(on):
 		for column in range(0, height, pixel_size):
 			for row in range(0, width, pixel_size):
@@ -84,6 +82,7 @@ def erase_all():
 				draw.rectangle([row+1, column+1, row+pixel_size-1, column+pixel_size-1], fill = 'white', outline = 'white')
 	start_block_on = 0
 	finish_block_on = 0
+	arr_color = {}
 
 def make():																		
 	arr = []
@@ -122,7 +121,6 @@ def check_first():
 
 def execute():
 	global on
-	erase_all()
 	arr, start, end = make()
 	que = [start]
 
