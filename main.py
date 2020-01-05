@@ -30,13 +30,16 @@ def set_color(colour):
 	color = colour
 
 
+def draw_block(x1,y1):
+	screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
+	draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)	
+
 
 def paint(event):
 	global color, start_block_on, finish_block_on, arr_color
+	x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
 	if color == 'white' and not(on):
-		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
-		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
-		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+		draw_block(x1,y1)
 		if (x1,y1) in arr_color:
 			clr = arr_color[(x1,y1)]
 			if clr == "red" and start_block_on == 1:
@@ -48,23 +51,16 @@ def paint(event):
 				finish_block_on = 0
 	elif color == 'red' and not(on):
 		if not(start_block_on == 1):
-			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
-			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
-			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+			draw_block(x1,y1)
 			start_block_on = 1
 			arr_color[(x1,y1)] = "red"
 	elif color == 'blue' and not(on):
 		if not(finish_block_on == 1):		
-			x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
-			screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
-			draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
+			draw_block(x1,y1)
 			finish_block_on = 1
 			arr_color[(x1,y1)] = "blue"
 	elif color == 'black' and not(on):
-		x1, y1 = (event.x)//pixel_size, (event.y)//pixel_size
-		screen.create_rectangle(x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1, fill = color, outline = color)
-		draw.rectangle([x1*pixel_size+1, y1*pixel_size+1, x1*pixel_size+pixel_size-1, y1*pixel_size+pixel_size-1], fill = color, outline = color)
-
+		draw_block(x1,y1)
 
 
 
@@ -121,6 +117,7 @@ def check_first():
 
 def execute():
 	global on
+	on = 1
 	arr, start, end = make()
 	que = [start]
 
@@ -157,14 +154,13 @@ def execute():
 	walker = E
 
 	while(walker != S):
-		on = 1
 		x = walker[0]
 		y = walker[1]
 		screen.create_rectangle(x*pixel_size+1, y*pixel_size+1, x*pixel_size+pixel_size-1, y*pixel_size+pixel_size-1, fill = "light goldenrod", outline = "light goldenrod")
 		walker = arr[walker[0]][walker[1]]
 		
 		screen.update()
-		time.sleep(0.1)
+		time.sleep(0.01)
 		step += 1
 	on = 0
 
