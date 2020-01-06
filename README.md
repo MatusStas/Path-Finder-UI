@@ -2,6 +2,10 @@
 
 Animated algorithm responsible for finding shortest path between 2 points in a grid.
 
-## man --help
+## Manual
 
-First of all you have draw **start block** and **finish block** without overlapping.
+1. draw *start* block 
+2. draw *finish* block
+3. draw *obstacle* blocks if you want
+4. if something went wrong erase it
+5. push *execute* button
