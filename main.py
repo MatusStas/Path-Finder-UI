@@ -50,11 +50,11 @@ def paint(event):
 				del arr_color[(x1,y1)]
 				finish_block_on = 0
 	elif color == 'red' and not(on):
-		if not(start_block_on == 1):
+		if not(start_block_on == 1) and (x1,y1) not in arr_color:
 			draw_block(x1,y1)
 			start_block_on = 1
 			arr_color[(x1,y1)] = "red"
-	elif color == 'blue' and not(on):
+	elif color == 'blue' and not(on) and (x1,y1) not in arr_color:
 		if not(finish_block_on == 1):		
 			draw_block(x1,y1)
 			finish_block_on = 1
