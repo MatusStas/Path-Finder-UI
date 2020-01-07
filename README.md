@@ -9,3 +9,6 @@ Animated algorithm responsible for finding shortest path between 2 points in a g
 3. draw *obstacle* blocks if you want
 4. if something went wrong erase it
 5. push *execute* button
+
+
+![GRID](grid.png)
